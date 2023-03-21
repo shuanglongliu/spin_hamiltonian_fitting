@@ -48,7 +48,7 @@ end
 function read_yaml()
     
     # Read input.yaml
-    # Return spins, n_site, pairs, n_pair, n_conf, eij, c_alpha, n_c_alpha, c_pi, n_c_pi
+    # Return spins, n_site, pairs, n_pair, eij, c_alpha, n_c_alpha, c_pi, n_c_pi
 
 
     data = YAML.load_file("input.yaml")
@@ -68,10 +68,10 @@ function read_yaml()
     n_c_pi = length(c_pi)
     n_c = n_c_alpha + 3*n_c_pi
     
-    return spins, n_site, pairs, n_pair, n_conf, eij, c_alpha, n_c_alpha, c_pi, n_c_pi, n_c
+    return spins, n_site, pairs, n_pair, eij, c_alpha, n_c_alpha, c_pi, n_c_pi, n_c
 end
 
-function read_dipoles(n_site::Int64)
+function read_dipoles(n_site::Int64,spins::Vector{Float64})
     # Read input.yaml
     # Return n_conf, S (spin configurations), and P (dipoles)
 
@@ -222,9 +222,9 @@ end
 function main()
     # cd("/Users/shlufl/Documents/Researches_iMac/Projects/SLL-Mn4Na/enotes/polarization")
     
-    spins, n_site, pairs, n_pair, n_conf, eij, c_alpha, n_c_alpha, c_pi, n_c_pi, n_c = read_yaml()
+    spins, n_site, pairs, n_pair, eij, c_alpha, n_c_alpha, c_pi, n_c_pi, n_c = read_yaml()
     
-    n_conf, S, P = read_dipoles(n_site)
+    n_conf, S, P = read_dipoles(n_site,spins)
     
     # Number of components of polarization for all spin configurations
     n_p = 3*n_conf
