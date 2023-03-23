@@ -63,9 +63,17 @@ function read_yaml()
     eij = get_eij(positions, pairs, n_pair)
     
     c_alpha = data["constraints_alpha"]
-    n_c_alpha = length(c_alpha)
+    if c_alpha == nothing
+        n_c_alpha = 0
+    else
+        n_c_alpha = length(c_alpha)
+    end
     c_pi = data["constraints_pi"]
-    n_c_pi = length(c_pi)
+    if c_pi == nothing
+        n_c_pi = 0
+    else
+        n_c_pi = length(c_pi)
+    end
     n_c = n_c_alpha + 3*n_c_pi
     
     return spins, n_site, pairs, n_pair, eij, c_alpha, n_c_alpha, c_pi, n_c_pi, n_c
@@ -220,8 +228,6 @@ function analysis(x::Vector{Float64}, y::Vector{Float64}, A::Array{Float64}, n_y
 end
 
 function main()
-    # cd("/Users/shlufl/Documents/Researches_iMac/Projects/SLL-Mn4Na/enotes/polarization")
-    
     spins, n_site, pairs, n_pair, eij, c_alpha, n_c_alpha, c_pi, n_c_pi, n_c = read_yaml()
     
     n_conf, S, P = read_dipoles(n_site,spins)
@@ -240,10 +246,14 @@ function main()
     
     A = get_A(S, eij, n_p, n_x, n_y, n_conf, i_conf_ref, n_pair, pairs)
     
-    C, z = get_constraints(c_alpha, c_pi, n_c_alpha, n_c_pi, n_c, n_x, n_pair)
+    if n_c == 0
+        x = A \ y
+    else
+        C, z = get_constraints(c_alpha, c_pi, n_c_alpha, n_c_pi, n_c, n_x, n_pair)
         
-    kkt_sol = [2*A'*A   C'; C  zeros(n_c,n_c)] \ [2*A'*y; z]
-    x = kkt_sol[1:n_x]
+        kkt_sol = [2*A'*A   C'; C  zeros(n_c,n_c)] \ [2*A'*y; z]
+        x = kkt_sol[1:n_x]
+    end
     
     print_results(x, n_pair, pairs)
     
