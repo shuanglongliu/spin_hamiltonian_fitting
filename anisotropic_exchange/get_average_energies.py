@@ -6,5 +6,5 @@ if __name__ == "__main__":
     m, n = data.shape
     l = m // 2
     data[0:l, n-1] = (data[0:l, n-1] + data[l:m, n-1])/2
-    np.savetxt("energies_avergies.dat", data[0:l, :], fmt="%15.8f")
+    np.savetxt("energies_average.dat", data[0:l, :], fmt="%15.8f")
 
