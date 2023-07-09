@@ -1,3 +1,4 @@
+
 using YAML
 using LinearAlgebra
 using Printf
@@ -134,25 +135,39 @@ function get_Js(data::Dict, reference_frames::Array, n_site::Int64, spins::Array
 end
 
 
-function print_Js(n_spin_pair::Int64, Js::Vector{Float64})
-    ind = 1
-    for i=1:n_spin_pair
-        @printf("Pair %3d\n", i)
-        @printf("J_xx = %9.3f\n", Js[9*(i-1)+1])
-        @printf("J_xy = %9.3f\n", Js[9*(i-1)+2])
-        @printf("J_xz = %9.3f\n", Js[9*(i-1)+3])
-        @printf("J_yx = %9.3f\n", Js[9*(i-1)+4])
-        @printf("J_yy = %9.3f\n", Js[9*(i-1)+5])
-        @printf("J_yz = %9.3f\n", Js[9*(i-1)+6])
-        @printf("J_zx = %9.3f\n", Js[9*(i-1)+7])
-        @printf("J_zy = %9.3f\n", Js[9*(i-1)+8])
-        @printf("J_zz = %9.3f\n", Js[9*(i-1)+9])
+function print_Js(n_spin_pair::Int64, Js::Vector{Float64}, iformat)
+    if iformat == 1
+        for i=1:n_spin_pair
+            @printf("Pair %3d\n", i)
+            @printf("J_xx = %9.3f\n", Js[9*(i-1)+1])
+            @printf("J_xy = %9.3f\n", Js[9*(i-1)+2])
+            @printf("J_xz = %9.3f\n", Js[9*(i-1)+3])
+            @printf("J_yx = %9.3f\n", Js[9*(i-1)+4])
+            @printf("J_yy = %9.3f\n", Js[9*(i-1)+5])
+            @printf("J_yz = %9.3f\n", Js[9*(i-1)+6])
+            @printf("J_zx = %9.3f\n", Js[9*(i-1)+7])
+            @printf("J_zy = %9.3f\n", Js[9*(i-1)+8])
+            @printf("J_zz = %9.3f\n", Js[9*(i-1)+9])
+        end
+    elseif iformat == 2
+        for i=1:n_spin_pair
+            # @printf("Pair %3d\n", i)
+            @printf(" %9.3f", Js[9*(i-1)+1])
+            @printf(" %9.3f", Js[9*(i-1)+2])
+            @printf(" %9.3f", Js[9*(i-1)+3])
+            @printf(" %9.3f", Js[9*(i-1)+4])
+            @printf(" %9.3f", Js[9*(i-1)+5])
+            @printf(" %9.3f", Js[9*(i-1)+6])
+            @printf(" %9.3f", Js[9*(i-1)+7])
+            @printf(" %9.3f", Js[9*(i-1)+8])
+            @printf(" %9.3f", Js[9*(i-1)+9])
+        end
     end
 end
 
-function main()
+function main(dirname::String)
     # Go to the working directory
-    # cd("/Users/shlufl/Documents/Researches_iMac/Projects/Shubham_Ni3Cr/enotes/exchange/pair_41")
+    cd(dirname)
 
     # Comments on input file
     # The reference frame for each pair of spins must be specified.
@@ -180,8 +195,8 @@ function main()
     Js = get_Js(data, reference_frames, n_site, spins, spin_pairs, n_spin_pair, n_energy_pair, factor, quantum_correction)
 
     # Print out exchange coupling constants
-    print_Js(n_spin_pair, Js)
+    print_Js(n_spin_pair, Js, 2)
 end
 
-main()
+main("/Users/shlufl/Documents/Researches/Projects/SLL-Mn8/enotes/pressure/10_kbar/exchange/matrix/pair_12")
 
