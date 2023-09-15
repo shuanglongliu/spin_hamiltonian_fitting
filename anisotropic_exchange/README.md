@@ -1,3 +1,3 @@
 # exchange_coupling
 
-Julia code for calculating exchange coupling matrices based on DFT energies.
+Julia code for calculating exchange coupling constants based on DFT energies.
