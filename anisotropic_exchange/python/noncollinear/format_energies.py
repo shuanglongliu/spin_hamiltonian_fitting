@@ -18,5 +18,5 @@ def do_one_pair(i, j):
 
 if __name__ == "__main__":
 
-    do_one_pair(1, 4)
+    do_one_pair(2, 4)
 
