@@ -1,0 +1,8 @@
+Version 1: Constrained least square fitting.
+Version 2: Least square fitting using only independent variables.
+
+These two versions yield different results. 
+However, the mean error and the std of errors are the same.
+It seems that the fitting problem is underdetermined.
+Probably, these two versions yield the same results using more data.
+
