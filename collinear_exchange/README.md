@@ -25,7 +25,6 @@ collinear_exchange/
 ├── orca/
 │   ├── data.py       # spin configs, ORCA input template, SLURM script
 │   ├── main.py       # BsDft / BsDftManager classes
-│   └── orca.xyz      # shared molecular geometry (user-provided)
 ├── vasp/
 │   ├── data.py       # INCAR, POSCAR, KPOINTS templates, SLURM scripts
 │   └── main.py       # helper functions for VASP workflow
