@@ -23,7 +23,10 @@ from data import (
     expected_magmoms,
     effective_spins,
     configs, 
-    input_file, 
+    n_cpus,
+    mem_per_core,
+    input_file_hs,
+    input_file_bs,
     job_script,
 )
 
@@ -57,7 +60,7 @@ class BsDft:
         self.restart = restart
         self.work_dir = os.path.join(root_dir, config)
         self.n_sites = len(config)
-        self.input_file = input_file
+        self._set_input_file()
         self.job_script = job_script
         self._get_settings()
         self._get_reference_gbw()
@@ -76,6 +79,11 @@ class BsDft:
             # For the initial input, we want to specify the FlipSpin directive to define the broken-symmetry state, and FinalMs to reflect that state.
             self.flip_spin_tag = "FlipSpin"
             self.final_ms_tag = "FinalMs"
+
+        # If the number of down spins is bigger than the number of up spins,
+        # flip u to d, and d to u, so that the total Ms is always positive. 
+        if self.config.count("d") > self.config.count("u"):
+            self.config = self.config.replace("u", "x").replace("d", "u").replace("x", "d")
 
         indices = [i for i, c in enumerate(self.config) if c == "d"]
         self.flip_spin = ", ".join(str(i) for i in indices)
@@ -111,6 +119,15 @@ class BsDft:
                 latest_run = max(run_numbers)
                 self.ref_gbw_file = os.path.join(self.work_dir, f"run_{latest_run}.gbw")
 
+    def _set_input_file(self):
+        """Set input_file to input_file_hs is the state is high-spin,
+        otherwise set it to input_file_bs."""
+        global input_file_hs, input_file_bs
+        if all(c == "u" for c in self.config):
+            self.input_file = input_file_hs
+        else:
+            self.input_file = input_file_bs
+
     # ─────────────────────────────────────────────────────────────────────────
     # Public workflow methods
     # ─────────────────────────────────────────────────────────────────────────
@@ -126,6 +143,8 @@ class BsDft:
         # Write the ORCA input with the spin-specific placeholders filled in
         with open(os.path.join(wd, "orca.inp"), "w") as f:
             f.write(self.input_file.format(
+                n_cpus=n_cpus,
+                mem_per_core=mem_per_core,
                 flip_spin_tag=self.flip_spin_tag,
                 flip_spin=self.flip_spin,
                 final_ms_tag=self.final_ms_tag,
@@ -323,7 +342,7 @@ class BsDft:
         """
         Extract the final SCF energy from the orca.out file.
         """
-        self.energy = None
+        self.energy = 0.0
 
         # Check convergence
         self.check_convergence(verbose=False)
@@ -399,13 +418,13 @@ class BsDftManager:
 if __name__ == "__main__":
 
     # Instantiate the manager for all configurations
-    manager = BsDftManager(configs=configs, spin_only_Szs=spin_only_Szs, restart=True)
+    manager = BsDftManager(configs=configs, spin_only_Szs=spin_only_Szs, restart=False)
 
     # Step 1: Create work directories for all configurations
     # manager.create_work_dirs()
 
     # Step 2: Write input files and set up symlinks
-    # manager.get_input_files()
+    manager.get_input_files()
 
     # Step 3: Submit jobs to SLURM
     # manager.submit_jobs()
@@ -419,5 +438,5 @@ if __name__ == "__main__":
 
     # Step 6: After convergence, extract magnetic moments and energies
     # manager.get_magnetic_moments(magmom_tolerance=0.5)
-    manager.get_energies(magmom_tolerance=0.3)
+    # manager.get_energies(magmom_tolerance=0.3)
 

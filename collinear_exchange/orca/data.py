@@ -11,147 +11,67 @@ import os
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
 # High-spin (all-up) reference calculation used as MO starting guess
-hs_dir = os.path.join(root_dir, "uuuuuuuuuuu")
+hs_dir = os.path.join(root_dir, "uuuu")
 
 # Per-site spin quantum numbers |ms| for the 11 magnetic centers:
-spin_only_Szs = [1.5, 1.0, 1.5, 2, 2, 2, 2, 2, 2, 2, 2]
+spin_only_Szs = [0.5, 0.5, 0.5, 0.5]
 
 # Effective spin quantum numbers
-effective_spins = [4.5, 4.0, 4.5, 2, 2, 2, 2, 2, 2, 2, 2]
+effective_spins = [0.5, 0.5, 2.5, 2.5]
 
 # Expected local magnetic moments (in μB) for the HS reference, from Loewdin analysis:
 expected_magmoms = [
-3.046566,
-2.827955,
-3.048257,
-3.777876,
-3.662067,
-3.776683,
-3.719454,
-3.712534,
-3.782360,
-3.662376,
-3.765104 
+1.0,
+1.0,
+1.0,
+1.0,
 ]
 
-# Broken-symmetry spin configurations for the 11-site cluster.
-# Each character gives the local spin orientation at that site:
+# Broken-symmetry spin configurations 
 #   'u' = spin-up (ms = +|ms|),  'd' = spin-down (ms = −|ms|)
-# The first block contains coupled/mixed states; the remaining blocks
-# enumerate all single-site and two-site spin flips from the HS reference.
 configs = [
-    "uuuudduuddu",
-    "uuuuudduudd",
-    "uuudddduuuu",
-    "uuudduuuudd",
-    "uuuduududdu",
-    "uuududududu",
-    "uuududuudud",
-    "ddduuuuuudu",
-    "uuudduuuuud",
-    "ddduuduuuud",
-    # Single-site spin-down flips (one 'd' at each position)
-    "duuuuuuuuuu",
-    "uduuuuuuuuu",
-    "uuduuuuuuuu",
-    "uuuduuuuuuu",
-    "uuuuduuuuuu",
-    "uuuuuduuuuu",
-    "uuuuuuduuuu",
-    "uuuuuuuduuu",
-    "uuuuuuuuduu",
-    "uuuuuuuuudu",
-    "uuuuuuuuuud",
-    # Two-site spin-down flips (first site fixed as 'd', second site varies)
-    "dduuuuuuuuu",
-    "duduuuuuuuu",
-    "duuduuuuuuu",
-    "duuuduuuuuu",
-    "duuuuduuuuu",
-    "duuuuuduuuu",
-    "duuuuuuduuu",
-    "duuuuuuuduu",
-    "duuuuuuuudu",
-    "duuuuuuuuud",
-    "udduuuuuuuu",
-    "ududuuuuuuu",
-    "uduuduuuuuu",
-    "uduuuduuuuu",
-    "uduuuuduuuu",
-    "uduuuuuduuu",
-    "uduuuuuuduu",
-    "uduuuuuuudu",
-    "uduuuuuuuud",
-    "uudduuuuuuu",
-    "uududuuuuuu",
-    "uuduuduuuuu",
-    "uuduuuduuuu",
-    "uuduuuuduuu",
-    "uuduuuuuduu",
-    "uuduuuuuudu",
-    "uuduuuuuuud",
-    "uuudduuuuuu",
-    "uuududuuuuu",
-    "uuuduuduuuu",
-    "uuuduuuduuu",
-    "uuuduuuuduu",
-    "uuuduuuuudu",
-    "uuuduuuuuud",
-    "uuuudduuuuu",
-    "uuuududuuuu",
-    "uuuuduuduuu",
-    "uuuuduuuduu",
-    "uuuuduuuudu",
-    "uuuuduuuuud",
-    "uuuuudduuuu",
-    "uuuuududuuu",
-    "uuuuuduuduu",
-    "uuuuuduuudu",
-    "uuuuuduuuud",
-    "uuuuuudduuu",
-    "uuuuuududuu",
-    "uuuuuuduudu",
-    "uuuuuuduuud",
-    "uuuuuuudduu",
-    "uuuuuuududu",
-    "uuuuuuuduud",
-    "uuuuuuuuddu",
-    "uuuuuuuudud",
-    "uuuuuuuuudd",
+    "uuuu",
+    "uddd",
+    "uddu",
+    "udud",
+    "uduu",
+    "uudd",
+    "uudu",
+    "uuud",
 ]
-
-# Push the HS reference configuration to the front of the list for convenience
-configs.insert(0, "uuuuuuuuuuu")
 
 n_configs = len(configs)
+
+n_cpus = 32
+mem_per_core = 16000
 
 # ─────────────────────────────────────────────────────────────────────────────
 # ORCA input file templates
 # ─────────────────────────────────────────────────────────────────────────────
 
-input_file = """
+input_file_hs = """
 # --- Method & relativistic treatment ---
 # ZORA scalar relativistics are essential for lanthanides
 # TPSSh gives reliable J values for transition/lanthanide systems
-! TPSSh ZORA DefGrid3 TightSCF KDIIS MORead # SlowConv NoTRAH 
+! TPSSh ZORA DefGrid3 TightSCF KDIIS NoTRAH # SlowConv MORead
 
 %basis
     # All-electron ZORA basis for lanthanide atoms — must use SARC
-    NewGTO Nd "SARC-ZORA-TZVP" end
+    NewGTO Ce "SARC-ZORA-TZVP" end
 
     # ZORA-recontracted triple-zeta for transition metal and light atoms
-    NewGTO Mn "ZORA-def2-TZVP"  end
-    NewGTO C  "ZORA-def2-TZVP"  end
-    NewGTO N  "ZORA-def2-TZVP"  end
+    NewGTO Cu "ZORA-def2-TZVP"  end
     NewGTO O  "ZORA-def2-TZVP"  end
+    NewGTO N  "ZORA-def2-TZVP"  end
+    NewGTO C  "ZORA-def2-TZVP"  end
     NewGTO H  "ZORA-def2-SVP"   end   # SVP for H is sufficient
 end
 
 # --- Parallelization ---
-%pal nprocs 16 end
+%pal nprocs {n_cpus:d} end
 
 # --- Memory per core in MB ---
-%maxcore 8000
+%maxcore {mem_per_core:d}
 
 # --- SCF options ---
 %scf
@@ -161,7 +81,61 @@ end
     DIISMaxEq 15
 
     # Trusted region augmentation Hessian (TRAH): 2nd order SCF
-    AutoTRAH  true
+    # AutoTRAH  true
+
+    # Use the converged HS orbitals as starting guess
+    # MOInp "dft.gbw"
+
+    # Flip spins on magnetic centers (0-based atom indices)
+    # {flip_spin_tag:s} {flip_spin:s}
+    # {final_ms_tag:s} {final_ms:.1f}
+end
+
+# --- Output: natural population analysis useful for spin analysis ---
+%output
+    Print[P_Mulliken]   1
+    Print[P_Loewdin]  1
+end
+
+# ================================================================
+#  CHARGE and MULTIPLICITY
+# ================================================================
+* xyzfile  0  {multiplicity:d}   orca.xyz
+"""
+
+input_file_bs = """
+# --- Method & relativistic treatment ---
+# ZORA scalar relativistics are essential for lanthanides
+# TPSSh gives reliable J values for transition/lanthanide systems
+! TPSSh ZORA DefGrid3 TightSCF KDIIS NoTRAH # SlowConv MORead
+
+%basis
+    # All-electron ZORA basis for lanthanide atoms — must use SARC
+    NewGTO Ce "SARC-ZORA-TZVP" end
+
+    # ZORA-recontracted triple-zeta for transition metal and light atoms
+    NewGTO Cu "ZORA-def2-TZVP"  end
+    NewGTO O  "ZORA-def2-TZVP"  end
+    NewGTO N  "ZORA-def2-TZVP"  end
+    NewGTO C  "ZORA-def2-TZVP"  end
+    NewGTO H  "ZORA-def2-SVP"   end   # SVP for H is sufficient
+end
+
+# --- Parallelization ---
+%pal nprocs {n_cpus:d} end
+
+# --- Memory per core in MB ---
+%maxcore {mem_per_core:d}
+
+# --- SCF options ---
+%scf
+    MaxIter   500
+
+    # Use larger DIIS to help convergence with open-shell lanthanide
+    DIISMaxEq 15
+
+    # Trusted region augmentation Hessian (TRAH): 2nd order SCF
+    # AutoTRAH  true
 
     # Use the converged HS orbitals as starting guess
     MOInp "dft.gbw"
@@ -178,7 +152,7 @@ end
 end
 
 # ================================================================
-#  CHARGE and MULTIPLICITY  (adjust to your system!)
+#  CHARGE and MULTIPLICITY
 # ================================================================
 * xyzfile  0  {multiplicity:d}   orca.xyz
 """
@@ -211,3 +185,28 @@ apptainer exec --no-mount /red \\
 
 rm -rf core.*
 """
+
+job_script = """#!/bin/bash
+
+#SBATCH -A m3346
+#SBATCH -J Ce24Cu
+#SBATCH -C cpu
+#SBATCH --qos=regular
+#SBATCH -t 08:30:00
+#SBATCH -N 1
+#SBATCH -n 32
+#SBATCH -c 8
+#SBATCH --output=output
+#SBATCH --error=error
+#SBATCH --mail-type=None
+#SBATCH --mail-user=shuan.liu@northeastern.edu
+#SBATCH --image=shlliu/orca:3.0
+#SBATCH --volume=/global/cfs/cdirs/m3346/shlufl/apps/orca/6.1.1/linux_x86-64_shared_openmpi418:/opt/orca
+
+source ~/.bash_aliases; keep_log
+
+shifter --env=LD_LIBRARY_PATH=/opt/orca/lib /opt/orca/orca orca.inp > orca.out
+
+#rm -rf orca.densities orca.gbw *.tmp* # NEVPT2
+"""
+
