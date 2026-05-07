@@ -160,7 +160,9 @@ class BsDft:
         subprocess.run(["ln", "-sf", "../orca.xyz", os.path.join(wd, "orca.xyz")])
 
         # Symlink the reference GBW file as the MO starting guess
-        subprocess.run(["ln", "-sf", self.ref_gbw_file, os.path.join(wd, "dft.gbw")])
+        # Skip this for the high spin state
+        if not all(c == "u" for c in self.config):
+            subprocess.run(["ln", "-sf", self.ref_gbw_file, os.path.join(wd, "dft.gbw")])
 
     def submit_job(self):
         """Submit orca.job to SLURM from the working directory."""

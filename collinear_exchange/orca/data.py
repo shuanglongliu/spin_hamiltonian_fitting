@@ -40,6 +40,8 @@ configs = [
     "uuud",
 ]
 
+configs = [ "uuuu" ]
+
 n_configs = len(configs)
 
 n_cpus = 32
@@ -53,7 +55,7 @@ input_file_hs = """
 # --- Method & relativistic treatment ---
 # ZORA scalar relativistics are essential for lanthanides
 # TPSSh gives reliable J values for transition/lanthanide systems
-! TPSSh ZORA DefGrid3 TightSCF KDIIS NoTRAH # SlowConv MORead
+! PBE ZORA DefGrid2 TightSCF MORead KDIIS NoTRAH # SlowConv
 
 %basis
     # All-electron ZORA basis for lanthanide atoms — must use SARC
@@ -61,9 +63,9 @@ input_file_hs = """
 
     # ZORA-recontracted triple-zeta for transition metal and light atoms
     NewGTO Cu "ZORA-def2-TZVP"  end
-    NewGTO O  "ZORA-def2-TZVP"  end
-    NewGTO N  "ZORA-def2-TZVP"  end
-    NewGTO C  "ZORA-def2-TZVP"  end
+    NewGTO O  "ZORA-def2-SVP"  end
+    NewGTO N  "ZORA-def2-SVP"  end
+    NewGTO C  "ZORA-def2-SVP"  end
     NewGTO H  "ZORA-def2-SVP"   end   # SVP for H is sufficient
 end
 
@@ -84,7 +86,7 @@ end
     # AutoTRAH  true
 
     # Use the converged HS orbitals as starting guess
-    # MOInp "dft.gbw"
+    MOInp "dft.gbw"
 
     # Flip spins on magnetic centers (0-based atom indices)
     # {flip_spin_tag:s} {flip_spin:s}
