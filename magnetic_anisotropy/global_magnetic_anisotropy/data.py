@@ -1,7 +1,23 @@
+<<<<<<< HEAD:global/data.py
+"""Static templates and paths used to drive VASP runs.
+
+Edit ``incar``, ``poscar``, ``kpoints``, and ``job_script`` here to change
+the calculation; ``common.py`` writes them verbatim into each run directory.
+"""
+
+import os
+
+
+# Directory layout
+root_dir = os.path.dirname(os.path.abspath(__file__))
+wave_dir = "0"  # Reference run that supplies WAVECAR to subsequent jobs.
+
+=======
 import os
 
 root_dir = os.path.dirname(os.path.abspath(__file__))  + "/"
 wave_dir = "6476401"
+>>>>>>> 48e34a90e61bcded54668d76685419d8fc86423d:global_magnetic_anisotropy/data.py
 
 incar = """
 SYSTEM = vasp
@@ -19,7 +35,7 @@ ENCUT = 450
 LREAL = F
 
 #### parallelization ####
-KPAR = 4
+# KPAR = 4
 NCORE = 8
 
 #### electronic optimization ####
@@ -53,30 +69,16 @@ GGA_COMPAT = F
 #### magnetism: noncollinear spin, SOC ####
 LSORBIT = T
 SAXIS = {sstring:s}
-MAGMOM = 0.0 0.0 -1.0 \\
-         0.0 0.0 -1.0 \\
-         0.0 0.0 -1.0 \\
-         0.0 0.0 -1.0 \\
-         0.0 0.0 3.0 \\
-         0.0 0.0 3.0 \\
-         0.0 0.0 3.0 \\
-         0.0 0.0 3.0 \\
-         3300*0.0
+MAGMOM = 0.0 0.0 5.0 \\
+         300*0.0
 
 #### magnetism: constraint ####
 I_CONSTRAINED_M = 1
-M_CONSTR =  0.0 0.0 -1.0 \\
-         0.0 0.0 -1.0 \\
-         0.0 0.0 -1.0 \\
-         0.0 0.0 -1.0 \\
-         0.0 0.0 3.0 \\
-         0.0 0.0 3.0 \\
-         0.0 0.0 3.0 \\
-         0.0 0.0 3.0 \\
-         3300*0.0
+M_CONSTR =  0.0 0.0 5.0 \\
+         300*0.0
 
 LAMBDA =  10.0
-RWIGS = 1.286 1.302 0.820
+RWIGS = 1.323 1.524 0.820
 
 #### magnetism: orbital moment ####
 LORBMOM = T
@@ -91,11 +93,11 @@ LMAXMIX = 4
 
 #### dos ####
 ISMEAR = 0
-SIGMA = 0.02
-NEDOS = 501
-EMIN = -15
-EMAX = 10
-LORBIT = 11
+SIGMA = 0.1
+# NEDOS = 501
+# EMIN = -15
+# EMAX = 10
+# LORBIT = 11
 
 #### Partial Charge ####
 #LPARD = T
@@ -103,21 +105,21 @@ LORBIT = 11
 #EINT = -4.7355 -4.0500
 
 #### vdW ####
-IVDW = 11
+# IVDW = 11
 
 #### LDA+U ####
-LDAU = T
-LDAUTYPE = 2
-LDAUPRINT = 1
-LDAUL =   2    2   -1  
-LDAUU =   5.5  3.0  0.0
-LDAUJ =   0.0  0.0  0.0
+# LDAU = T
+# LDAUTYPE = 2
+# LDAUPRINT = 1
+# LDAUL =   2    2   -1
+# LDAUU =   5.5  3.0  0.0
+# LDAUJ =   0.0  0.0  0.0
 
 #### HSE ####
-#LHFCALC = T 
-#HFSCREEN = 0.2 
+#LHFCALC = T
+#HFSCREEN = 0.2
 #PRECFOCK = Accurate
-#ALGO = All 
+#ALGO = All
 #TIME = 0.35
 
 #### wann ####
@@ -130,7 +132,7 @@ LDAUJ =   0.0  0.0  0.0
 #LMONO = T
 #LDIPOL = T
 #LCALCPOL = T
-#DIPOL = 0.5 0.5 0.5 
+#DIPOL = 0.5 0.5 0.5
 
 ### occupation matrix control ###
 #OCCEXT = 1
@@ -139,115 +141,32 @@ LDAUJ =   0.0  0.0  0.0
 kpoints = """kpoints
 0
 gamma
- 10  10  8
+ 15  15  15
  0.0 0.0 0.0
 """
 
-poscar = """
+poscar = """Mn Mg3 O4 - experiment lattice constant
+1.0
+   4.2112    0.0000    0.0000
+   0.0000    4.2112    0.0000
+   0.0000    0.0000    4.2112
+Mn Mg O
+1 3 4
+direct
+   0.0000000000000000    0.0000000000000000    0.0000000000000000 Mg2+
+   0.0000000000000000    0.5000000000000000    0.5000000000000000 Mg2+
+   0.5000000000000000    0.0000000000000000    0.5000000000000000 Mg2+
+   0.5000000000000000    0.5000000000000000    0.0000000000000000 Mg2+
+   0.0000000000000000    0.0000000000000000    0.5000000000000000 O2-
+   0.0000000000000000    0.5000000000000000    0.0000000000000000 O2-
+   0.5000000000000000    0.0000000000000000    0.0000000000000000 O2-
+   0.5000000000000000    0.5000000000000000    0.5000000000000000 O2-
 """
 
-job_script_mpi = """#!/bin/bash
-
-#SBATCH -A m3346
-#SBATCH -J Co3
-#SBATCH -q regular
-#SBATCH -C knl 
-#SBATCH -N 2
-#SBATCH --ntasks-per-node=64
-#SBATCH --time=0-10:00:00 
-#SBATCH --error=error
-#SBATCH --output=output
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=shlufl@ufl.edu
-##SBATCH --dependency=afterok:45514509
- 
-module load vasp/6.2.1-knl
-
-export OMP_NUM_THREADS=1
-
-keep_log
-
-srun -n 128 -c 4 --cpu_bind=cores vasp_ncl 
-"""
-
-job_script_hybrid = """#!/bin/bash
-
-#SBATCH -A m3346
-#SBATCH -J Co3
-#SBATCH -q regular
-#SBATCH -C knl
-#SBATCH -N 4
-#SBATCH --ntasks-per-node=8
-#SBATCH --time=1-00:00:00
-#SBATCH --error=error
-#SBATCH --output=output
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=shlufl@ufl.edu
-##SBATCH --dependency=afterok:45637525
-
-module load vasp/6.1.2-knl
-
-export OMP_NUM_THREADS=8
-
-keep_log
-
-srun -n 32 -c 32 --cpu_bind=cores vasp_ncl
-"""
-
-job_script_hipergator = """#!/bin/bash -l
-
-#SBATCH --account=m2qm-efrc
-#SBATCH --qos=m2qm-efrc-b
-#SBATCH --job-name=Co3
-#SBATCH --mail-type=All
-#SBATCH --mail-user=shlufl@ufl.edu
-#SBATCH --partition=hpg-default
-#SBATCH --nodes=1
-#SBATCH --ntasks=128
-#SBATCH --cpus-per-task=1
-#SBATCH --ntasks-per-socket=16
-#SBATCH --mem=200gb
-#SBATCH --distribution=cyclic:cyclic
-#SBATCH -t 96:00:00
-#SBATCH --err=error
-#SBATCH --output=output
-##SBATCH --dependency=afterok:8190473
-
-module purge
-module load intel/2020.0.166 openmpi/4.1.1
-
-source ~/.bash_aliases; keep_log
-
-srun --mpi=pmix_v2  $HOME/bin/vasp_ncl
-"""
-
-job_script_hpg_gpu = """#!/bin/bash
-
-#SBATCH --job-name=Cr3
-#SBATCH --mem-per-cpu=20gb
-#SBATCH -t 4-00:00:00
-#SBATCH -p gpu --gpus=a100:2
-#SBATCH --account=m2qm-efrc
-#SBATCH --qos=m2qm-efrc
-#SBATCH --nodes=1
-#SBATCH --ntasks=2
-#SBATCH --ntasks-per-node=2
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=shlufl@ufl.edu
-#SBATCH --error=error
-#SBATCH --output=output
-##SBATCH --dependency=afterok:9106099
-
-module purge; module load cuda/11.1.0 nvhpc/20.11 qd/2.3.22 openmpi/4.0.5 fftw/3.3.8
-
-export LD_LIBRARY_PATH=/apps/nvidia/nvhpc/Linux_x86_64/20.11/compilers/extras/qd/lib:$LD_LIBRARY_PATH
-
-source ~/.bash_aliases; keep_log
-
-srun --mpi=pmix /home/shlufl/apps/vasp.6.2.1/bin_gpu/vasp_ncl
-"""
-
-job_script_perlmutter_1_node = """#!/bin/bash
+# Slurm submission script for Perlmutter CPU partition.
+# (A GPU variant is kept below as a reference; switch by reassigning
+# ``job_script`` to the desired template.)
+job_script_gpu = """#!/bin/bash
 #SBATCH -A m3346_g
 #SBATCH -J Cr3
 #SBATCH -C gpu
@@ -265,50 +184,42 @@ job_script_perlmutter_1_node = """#!/bin/bash
 #SBATCH --mail-user=shlufl@ufl.edu
 ##SBATCH --dependency=afterok:45514509
 
-module load vasp/6.2.1-gpu
+module load vasp/6.4.3-gpu
 
 source ~/.bash_aliases; keep_log
 
-#if [ -f CONTCAR ]; then nl=$(wc -l CONTCAR | awk '{printf "%d", $1}'); if [ $nl -gt 8 ]; then cp CONTCAR POSCAR; else echo "Incomplete CONTCAR"; exit; fi; fi
-#if [ -f STOPCAR ]; then rm STOPCAR; fi
-
-srun -n 4 -c 32 --cpu-bind=cores -G 4 --gpu-bind=single:1 vasp_ncl
+srun -n 4 -c 32 --cpu-bind=cores -G 4 --gpu-bind=none vasp_ncl
 """
 
-job_script_perlmutter_4_nodes = """#!/bin/bash
+job_script = """#!/bin/bash
 
-#SBATCH -A m3346_g
-#SBATCH -J NCO
-#SBATCH -C gpu
-#SBATCH -q regular
-#SBATCH -t 02:00:00
-#SBATCH -N 4
-#SBATCH -n 16
-#SBATCH -G 16
-#SBATCH -c 32
-#SBATCH --gpus-per-task=1
-#SBATCH --error=error
+#SBATCH -A m3346
+#SBATCH -J Mn-MgO
+#SBATCH -C cpu
+#SBATCH --qos=shared
+#SBATCH -t 01:00:00
+#SBATCH -N 1
+#SBATCH -n 64
+#SBATCH -c 2
+#SBATCH --mem=128GB
 #SBATCH --output=output
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=shlufl@ufl.edu
-##SBATCH --dependency=afterok:45514509
-
-module load vasp/6.2.1-gpu
+#SBATCH --error=error
+#SBATCH --mail-type=None
+#SBATCH --mail-user=shuan.liu@northeastern.edu
 
 source ~/.bash_aliases; keep_log
 
-srun -n 16 -c 32 --cpu-bind=cores -G 16 --gpu-bind=single:1 vasp_ncl
+module load vasp/6.4.3-cpu
+export OMP_NUM_THREADS=1
+
+srun -n 64 -c 2 --cpu-bind=cores vasp_ncl
 """
 
-job_script = job_script_perlmutter_4_nodes
 
-emats_file = []
-
-for i in range(100):
-    emats_file.append( [[1,0,0],[0,1,0],[0,0,1]] )
-
-emat_file = [ \
-    [ 1, 0, 0 ], \
-    [ 0, 1, 0 ], \
-    [ 0, 0, 1 ] ] 
-
+# Default identity transformation: the local frame coincides with the global
+# frame. ``vasp_job_ncl.setup_local_ref_frames(from_file=True)`` reads this.
+emat_file = [
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1],
+]
