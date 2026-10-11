@@ -13,7 +13,4 @@ Each subdirectory was previously its own repository; its full commit history is 
 
 ## License
 
-Each subdirectory keeps its original license:
-
-- `collinear_exchange/`, `polarization/`: GNU AGPL v3
-- `magnetic_anisotropy/`: GNU GPL v3
+GNU General Public License v3.0; see [LICENSE](LICENSE).
