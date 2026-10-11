@@ -1,0 +1,102 @@
+import os
+import numpy as np
+from common import *
+
+def check_and_resubmit():
+
+    dirnames = [ "4319101_0_0", "3238801_0_0" ]
+    n = len(dirnames)
+    myjob = vasp_job()
+    for i in range(n):
+        myjob.set_dir_name(dirnames[i])
+        #print(myjob.dir_name)
+        myjob.check_convergence(restart=False)
+        # myjob.check_convergence(restart=True)
+
+def find_global_directions():
+    direction_emin = (42.9,  102.5)
+    myjob = vasp_jobs_ncl(n_site=1, magnetic_moments=[3], n_theta=1801, n_phi=3600)
+    myjob.setup_local_ref_frames(sites=[0], z_directions=[direction_emin], from_file=False)
+    myjob.add_configurations([[[2,90]]], local_ref_frame=True)
+    myjob.print_dirs_and_configs(local_ref_frame=False)
+
+def transform_reference_frame(emat):
+
+    myjob = vasp_jobs_ncl(n_site=1, magnetic_moments=[1], n_theta=1801, n_phi=3600)
+    myjob.setup_local_ref_frames(sites=[0], from_file=True)
+    myjob.add_configurations([[[  0, 0]]], local_ref_frame=False)
+    direction_emin = (0.0, 0.0)
+    myjob.setup_local_ref_frames(sites=[0], z_directions=[direction_emin], emats=[emat], from_z_direction=False, from_file=False)
+    myjob.transform_configurations(global2local = True)
+    myjob.print_dirs_and_configs(local_ref_frame=True)
+
+def do(direction_emin = (0.0, 0.0)):
+
+    myjob = vasp_jobs_ncl(n_site=10, magnetic_moments=[7, 7, 4, 4, 4, 4, 4, 4, 4, 4], n_theta=1801, n_phi=3600)
+    # myjob.setup_local_ref_frames(sites=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], from_file=True)
+
+    ### Sample magnetic configurations
+
+    # uuuuuuuuuu
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0]]], local_ref_frame=False)
+    # dduuuuuuuu
+    myjob.add_configurations([[[180,0], [180,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0]]], local_ref_frame=False)
+    # uduuuudddd
+    myjob.add_configurations([[[  0,0], [180,0], [  0,0], [  0,0], [  0,0], [  0,0], [180,0], [180,0], [180,0], [180,0]]], local_ref_frame=False)
+    # uuuudduudd
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [  0,0], [180,0], [180,0], [  0,0], [  0,0], [180,0], [180,0]]], local_ref_frame=False)
+    # uuudduuddu
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [180,0], [180,0], [  0,0], [  0,0], [180,0], [180,0], [  0,0]]], local_ref_frame=False)
+    # uuududdudu
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [180,0], [  0,0], [180,0], [180,0], [  0,0], [180,0], [  0,0]]], local_ref_frame=False)
+    # uuudududud
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [180,0], [  0,0], [180,0], [  0,0], [180,0], [  0,0], [180,0]]], local_ref_frame=False)
+    # uddddduuuu
+    myjob.add_configurations([[[  0,0], [180,0], [180,0], [180,0], [180,0], [180,0], [  0,0], [  0,0], [  0,0], [  0,0]]], local_ref_frame=False)
+    # uuuuuudddd
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [180,0], [180,0], [180,0], [180,0]]], local_ref_frame=False)
+    # uuudududdd
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [180,0], [  0,0], [180,0], [  0,0], [180,0], [180,0], [180,0]]], local_ref_frame=False)
+    # uuududdudd
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [180,0], [  0,0], [180,0], [180,0], [  0,0], [180,0], [180,0]]], local_ref_frame=False)
+    # uuuuududud
+    myjob.add_configurations([[[  0,0], [  0,0], [  0,0], [  0,0], [  0,0], [180,0], [  0,0], [180,0], [  0,0], [180,0]]], local_ref_frame=False)
+
+    ### Fix or flip one spin for all configurations.
+
+    # myjob.set_direction_for_one_site(i_site=0, direction=[180, 0], local_ref_frame=True)
+    # myjob.set_direction_for_one_site(i_site=1, direction=[180, 0], local_ref_frame=True)
+    # myjob.set_direction_for_one_site(i_site=2, direction=[180, 0], local_ref_frame=True)
+    # myjob.flip_direction_for_one_site(i_site=2)
+
+    ### If more than one local reference frames are used, it is necessary to update the local coordinates with respect to the last local reference frame.
+
+    # myjob.transform_configurations(global2local = True)
+
+    ### Let's go! 
+
+    # myjob.print_dirs_and_configs(local_ref_frame=True)
+    # myjob.print_dirs_and_configs(local_ref_frame=False)
+    myjob.setup_jobs(submit=False)
+    # myjob.setup_jobs(submit=True)
+    # myjob.check_convergences(restart=False)
+    # myjob.check_convergences(restart=True)
+    # myjob.check_local_magmoms_all_configurations()
+    # myjob.get_occmat_eigenvectors_all_configurations()
+    # restart(myjob, test=True, max_angle=45, from_neighbor=True, file_name="WAVECAR", copy_it=False)
+    # restart(myjob, test=False, max_angle=45, from_neighbor=True, file_name="WAVECAR", copy_it=False)
+    # myjob.get_energies()
+    # get_all_energies(myjob)
+
+if __name__ == "__main__":
+
+    # check_and_resubmit()
+
+    # find_global_directions()
+
+    # transform_reference_frame(some_emat)
+
+    do(direction_emin = (0.0, 0.0))
+
+    # pass
+
