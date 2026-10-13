@@ -96,12 +96,12 @@ function get_one_row_of_coefficients(data::Dict, i::Int64, reference_frames::Arr
     return (Ci, energies)
 end
 
-function get_coefficient_matrix(data::Dict, reference_frames::Array, n_site::Int64, spins::Array, spin_pairs::Array, n_spin_pair::Int64, n_energy_pair::Int64)
+function get_coefficient_matrix(data::Dict, reference_frames::Array, n_site::Int64, spins::Array, spin_pairs::Array, n_spin_pair::Int64, n_energy_pair::Int64, factor::Float64)
     n_J = 9*n_spin_pair
     Cs = Array{Float64, 2}(undef, n_energy_pair, n_J)
     Es = Array{Float64, 1}(undef, n_energy_pair)
     for i=1:n_energy_pair
-        Ci, energies = get_one_row_of_coefficients(data, i, reference_frames, n_site, spins, spin_pairs, n_spin_pair, -2.)
+        Ci, energies = get_one_row_of_coefficients(data, i, reference_frames, n_site, spins, spin_pairs, n_spin_pair, factor)
         for j=1:n_J
             Cs[i, j] = Ci[j]
         end
@@ -112,8 +112,17 @@ end
 
 
 function get_Js(data::Dict, reference_frames::Array, n_site::Int64, spins::Array, spin_pairs::Array, n_spin_pair::Int64, n_energy_pair::Int64, factor::Float64, quantum_correction::Bool)
-    Cs, Es = get_coefficient_matrix(data, reference_frames, n_site, spins, spin_pairs, n_spin_pair, n_energy_pair)
-    Js = inv(Cs)*Es
+    Cs, Es = get_coefficient_matrix(data, reference_frames, n_site, spins, spin_pairs, n_spin_pair, n_energy_pair, factor)
+    n_J = 9*n_spin_pair
+    if n_energy_pair < n_J
+        error(@sprintf("Underdetermined system: %d energy pair(s) for %d unknown(s).", n_energy_pair, n_J))
+    end
+
+    # Exact solve for a square system, least-squares fit for an overdetermined one
+    Js = Cs \ Es
+    if n_energy_pair > n_J
+        @printf("Least-squares fit of %d energy pairs for %d unknowns: residual = %.3e meV\n", n_energy_pair, n_J, norm(Cs*Js - Es))
+    end
 
     if quantum_correction
         # See Ruiz 2003
@@ -162,6 +171,7 @@ function print_Js(n_spin_pair::Int64, Js::Vector{Float64}, iformat)
             @printf(" %9.3f", Js[9*(i-1)+8])
             @printf(" %9.3f", Js[9*(i-1)+9])
         end
+        println()
     end
 end
 
@@ -198,5 +208,8 @@ function main(dirname::String)
     print_Js(n_spin_pair, Js, 2)
 end
 
-main("/Users/shlufl/Documents/Researches/Projects/SLL-Mn8/enotes/pressure/10_kbar/exchange/matrix/pair_12")
+# Usage: julia main.jl [directory containing input.yaml]
+if abspath(PROGRAM_FILE) == @__FILE__
+    main(isempty(ARGS) ? pwd() : ARGS[1])
+end
 

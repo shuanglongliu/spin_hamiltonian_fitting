@@ -19,7 +19,12 @@ def get_emat_exchange(i = 1, j = 2, form="vector"):
     positions = atoms.get_positions()
     ex = positions[j-1] - positions[i-1]
     ex /= np.linalg.norm(ex)
+    # Take e_z as the component of the global z axis orthogonal to the bond
     ez = np.array([0., 0., 1.])
+    ez -= np.dot(ez, ex) * ex
+    if np.linalg.norm(ez) < 1.e-8:
+        raise ValueError("Pair {:d} {:d}: bond is parallel to the global z axis.".format(i, j))
+    ez /= np.linalg.norm(ez)
     ey = np.cross(ez, ex)
     emat = np.array([ex, ey, ez])
 

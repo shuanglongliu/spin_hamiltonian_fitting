@@ -63,8 +63,8 @@ energies:              # one entry per equation
 - In `energies`, each configuration gives polar and azimuthal angles (degrees) for every site,
   followed by the total energy in eV. The angles are given in the reference frame of the
   listed `pair`.
-- The system is solved with `inv(Cs)*Es`, so the number of energy pairs must equal 9 × the
-  number of exchange pairs.
+- At least 9 energy pairs are needed per exchange pair. With exactly that many, the system is
+  solved exactly. With more, it is solved by least squares and the residual is printed.
 
 ---
 
@@ -76,19 +76,19 @@ energies:              # one entry per equation
 | `transform_reference_frame(...)` | Rotates spin vectors from one pair frame to another |
 | `fatten_one_energy_pair(...)` | Expresses both configurations of one energy pair in every pair frame |
 | `get_one_row_of_coefficients(...)` | Builds one row of the coefficient matrix |
-| `get_coefficient_matrix(...)` | Builds the full coefficient matrix and the energy differences (meV) |
-| `get_Js(..., quantum_correction)` | Solves for the J components; optionally applies the empirical correction 2*S*<sub>*i*</sub>*S*<sub>*j*</sub> / (2*S*<sub>*i*</sub>*S*<sub>*j*</sub> + min(*S*<sub>*i*</sub>, *S*<sub>*j*</sub>)) (Ruiz 2003) |
+| `get_coefficient_matrix(..., factor)` | Builds the full coefficient matrix and the energy differences (meV) |
+| `get_Js(..., factor, quantum_correction)` | Solves for the J components (exact or least-squares; errors if underdetermined); optionally applies the empirical correction 2*S*<sub>*i*</sub>*S*<sub>*j*</sub> / (2*S*<sub>*i*</sub>*S*<sub>*j*</sub> + min(*S*<sub>*i*</sub>, *S*<sub>*j*</sub>)) (Ruiz 2003) |
 | `print_Js(n_spin_pair, Js, iformat)` | `iformat = 1`: labelled per pair; `iformat = 2`: one line of all components |
 | `main(dirname)` | Reads `dirname/input.yaml`, fits, and prints the J components |
 
 ### Usage
 
-Edit the `main(...)` call on the last line to point to the directory that holds `input.yaml`,
-then run
-
 ```bash
-julia main.jl
+julia main.jl                 # uses input.yaml in the current directory
+julia main.jl path/to/dir     # uses path/to/dir/input.yaml
 ```
+
+`factor` and `quantum_correction` are set in `main`.
 
 ---
 
@@ -96,7 +96,7 @@ julia main.jl
 
 | Script | Description |
 |--------|-------------|
-| `get_emat.py` | Reads `left_hand_relaxed.vasp` and builds the frame of pair (*i*, *j*): **e**<sub>x</sub> along the *i* → *j* bond, **e**<sub>z</sub> = global *z*, **e**<sub>y</sub> = **e**<sub>z</sub> × **e**<sub>x</sub>. Prints it as a `reference_frame:` line or as a 3×3 array |
+| `get_emat.py` | Reads `left_hand_relaxed.vasp` and builds the frame of pair (*i*, *j*): **e**<sub>x</sub> along the *i* → *j* bond, **e**<sub>z</sub> = the part of the global *z* axis perpendicular to the bond, **e**<sub>y</sub> = **e**<sub>z</sub> × **e**<sub>x</sub>. Prints it as a `reference_frame:` line or as a 3×3 array |
 | `format_energies.py` | Reads `energies.dat` (columns: θ, φ per site, energy) and prints `input.yaml` energy pairs for one site pair, taking rows *k* and *k* + 9 as conf1 and conf2 |
 | `get_average_energies.py` | Averages the energies of row *k* and row *k* + *m*/2 of `energies.dat`; writes `energies_average.dat` |
 | `transform_J_matrix_local2global.py` | Rotates a J matrix from a local frame to the global frame, here for the three C₃-related pairs (0°, 120°, 240° about *z*) |
