@@ -185,9 +185,13 @@ def get_pi_and_d(x_J: np.ndarray, x_D: np.ndarray, inp: dict, fname: str):
 
 
 def get_P_in_local_reference_frames(x: np.ndarray, inp: dict) -> np.ndarray:
-    """x_loc_{gamma alpha beta} = sum rmat_{gamma gamma'} rmat_{alpha alpha'} rmat_{beta beta'} x_{gamma' alpha' beta'}."""
+    """Express each irreducible P in its local frame.
+
+    The local components of a vector v are emat v (rows of emat = local axes), so
+    x_loc_{gamma alpha beta} = sum emat_{gamma gamma'} emat_{alpha alpha'} emat_{beta beta'} x_{gamma' alpha' beta'}.
+    """
     P = x.reshape(-1, 3, 3, 3)
-    P_loc = np.array([np.einsum("gh,ai,bj,hij->gab", r, r, r, P[k]) for k, r in enumerate(inp["rmats"])])
+    P_loc = np.array([np.einsum("gh,ai,bj,hij->gab", r.T, r.T, r.T, P[k]) for k, r in enumerate(inp["rmats"])])
     return P_loc.flatten()
 
 
