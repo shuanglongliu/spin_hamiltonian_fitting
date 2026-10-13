@@ -9,7 +9,7 @@ import os
 
 # Directory layout
 root_dir = os.path.dirname(os.path.abspath(__file__))
-wave_dir = "0"  # Reference run that supplies WAVECAR to subsequent jobs (the other branch used "6476401").
+wave_dir = "0"  # Reference run that supplies WAVECAR to subsequent jobs.
 
 
 incar = """
