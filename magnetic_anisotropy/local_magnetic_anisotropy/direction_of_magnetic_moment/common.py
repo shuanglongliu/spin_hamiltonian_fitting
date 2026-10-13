@@ -32,7 +32,7 @@ class vasp_job:
     def get_input_files(self, mstring="3*"):
         os.chdir(self.dir_name)
         subprocess.run(["pwd"])
-        subprocess.run(["ln", "-sf", self.root_dir + "POTCAR", "."])
+        subprocess.run(["ln", "-sf", os.path.join(self.root_dir, "POTCAR"), "."])
         with open("INCAR", "w") as f:
             f.write(incar.format(mstring = mstring, rwigs = self.get_rwigs()))
         with open("POSCAR", "w") as f:
@@ -765,8 +765,8 @@ def restart(myjob, test=True, max_angle=180, from_neighbor=True, file_name="CHGC
             if angle <= max_angle:
                 directions_flat_i = [item for direction in myjob.configurations_local[i] for item in direction]
                 directions_flat_j = [item for direction in myjob.configurations_local[j] for item in direction]
-                orig = root_dir + myjob.dir_names[j] + "/" + file_name
-                dest = root_dir + myjob.dir_names[i] + "/" + file_name
+                orig = os.path.join(root_dir, myjob.dir_names[j], file_name)
+                dest = os.path.join(root_dir, myjob.dir_names[i], file_name)
                 print(ostring.format(*directions_flat_i, myjob.dir_names[i], *directions_flat_j, myjob.dir_names[j]))
                 if not test:
                     if copy_it:

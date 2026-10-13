@@ -1,4 +1,3 @@
-<<<<<<< HEAD:global/data.py
 """Static templates and paths used to drive VASP runs.
 
 Edit ``incar``, ``poscar``, ``kpoints``, and ``job_script`` here to change
@@ -10,14 +9,8 @@ import os
 
 # Directory layout
 root_dir = os.path.dirname(os.path.abspath(__file__))
-wave_dir = "0"  # Reference run that supplies WAVECAR to subsequent jobs.
+wave_dir = "0"  # Reference run that supplies WAVECAR to subsequent jobs (the other branch used "6476401").
 
-=======
-import os
-
-root_dir = os.path.dirname(os.path.abspath(__file__))  + "/"
-wave_dir = "6476401"
->>>>>>> 48e34a90e61bcded54668d76685419d8fc86423d:global_magnetic_anisotropy/data.py
 
 incar = """
 SYSTEM = vasp
