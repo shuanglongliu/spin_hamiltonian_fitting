@@ -94,7 +94,7 @@ def e_ani_q(angles, D, E, E0, dtheta, dphi):
 
     return energies
 
-def e_ani_c(directions, D, E, E0, dtheta, dphi):
+def e_ani_c(angles, D, E, E0, dtheta, dphi):
 
     """
     Magnetic anisotropy energy by treating spins as classical vectors.
