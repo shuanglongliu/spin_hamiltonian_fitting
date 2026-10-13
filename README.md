@@ -17,14 +17,6 @@ Each subdirectory was previously its own repository; its full commit history is 
 All code is Python (≥ 3.8): `numpy`, `scipy`, `pyyaml` and `matplotlib`; `ase` for structure
 handling and `sympy` for the spin operators in `magnetic_anisotropy/data_processing/`.
 
-Some scripts in `magnetic_anisotropy/data_processing/` import `pylib` from
-[shuanglongliu/programs](https://github.com/shuanglongliu/programs) (`python/pylib.py`). Put that
-directory on the Python path:
-
-```bash
-export PYTHONPATH=~/git/programs/python:$PYTHONPATH
-```
-
 ## License
 
 GNU General Public License v3.0; see [LICENSE](LICENSE).

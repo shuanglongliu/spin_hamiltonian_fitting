@@ -1,7 +1,7 @@
 import os
 import sys
 import numpy as np
-from pylib import change_frame_sph, cart2sph, get_opposite_direction_sph
+from geometry import change_frame_sph, cart2sph, get_opposite_direction_sph
 
 def get_energies_without_exchange(base_name = "energies", columns=[1, 2, 7]):
     # Take the average of E(direction) and E(opposite direction).

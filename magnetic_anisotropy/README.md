@@ -15,7 +15,5 @@ Step 4: Modify main.py to collect results.
 
 Requirement: A POTCAR file in the root directory where you set up all DFT calculations.
 
-The fitting scripts `fit_D_and_E.py`, `fit_D_tensor.py`, `fit_energy_surface.py` and
-`get_average_energies.py` in `data_processing/` import `pylib` from
-[shuanglongliu/programs](https://github.com/shuanglongliu/programs) (`python/pylib.py`); add that
-directory to `PYTHONPATH`.
+The spherical-coordinate and reference-frame helpers used by the scripts in `data_processing/`
+are in `data_processing/geometry.py`.

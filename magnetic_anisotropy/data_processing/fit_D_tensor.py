@@ -6,7 +6,7 @@ from scipy.spatial.transform import Rotation as R
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from spin import Spin, dim, Sx, Sy, Sz, ID, ss, Sx2, Sy2, Sz2, SxSy, SySx, SxSz, SzSx, SySz, SzSy
-from pylib import change_frame_sph_rad, sph2cart_rad, cart2sph_deg
+from geometry import change_frame_sph_rad, sph2cart_rad, cart2sph_deg
 
 def e_ani_q(angles, *params):
 

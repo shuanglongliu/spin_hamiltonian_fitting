@@ -4,7 +4,7 @@ from scipy.optimize import curve_fit
 from scipy.spatial.transform import Rotation as R
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from pylib import change_frame_sph_rad
+from geometry import change_frame_sph_rad
 
 emat_dft = np.eye(3)
 

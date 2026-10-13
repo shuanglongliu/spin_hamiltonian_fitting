@@ -6,7 +6,7 @@ from scipy.spatial.transform import Rotation as R
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from spin import Spin, dim, Sx, Sy, Sz, ID, ss, Sx2, Sy2, Sz2
-from pylib import change_frame_sph_rad, sph2cart_rad, cart2sph_deg
+from geometry import change_frame_sph_rad, sph2cart_rad, cart2sph_deg
 
 def rotate_frame(emat=np.eye(3), dtheta=0., dphi=0.):
 
