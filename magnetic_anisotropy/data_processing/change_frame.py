@@ -1,7 +1,10 @@
+import os
 import sys
 import numpy as np
 
-from geometry import change_frame_sph_deg, get_emat_local
+# base.py is shared by all directories under magnetic_anisotropy/
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from base import change_frame_sph, get_emat_local
 
 def change_frame(base_name = "energies", columns=(2,3,6), z_direction=(0., 0.), z_direction_from_data=0):
     
@@ -37,7 +40,7 @@ def change_frame(base_name = "energies", columns=(2,3,6), z_direction=(0., 0.), 
     es_new = []
     for i in range(ne):
         sph_old = [1, es[i,column1], es[i, column2]]
-        r, theta, phi = change_frame_sph_deg(sph_old, np.eye(3), emat_new)
+        r, theta, phi = change_frame_sph(sph_old, np.eye(3), emat_new)
         es_new.append([theta, phi, es[i, column3]])
     es_new = np.array(es_new)
     #print(es_new[0])

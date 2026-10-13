@@ -6,7 +6,9 @@ from scipy.spatial.transform import Rotation as R
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from spin import Spin, dim, Sx, Sy, Sz, ID, ss, Sx2, Sy2, Sz2, SxSy, SySx, SxSz, SzSx, SySz, SzSy
-from geometry import change_frame_sph_rad, sph2cart_rad, cart2sph_deg
+# base.py is shared by all directories under magnetic_anisotropy/
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from base import sph2cart
 
 def e_ani_q(angles, *params):
 
@@ -26,7 +28,7 @@ def e_ani_q(angles, *params):
     energies = []
     n_direction = len(thetas)
     for i in range(n_direction):
-        ex, ey, ez = sph2cart_rad([1, thetas[i], phis[i]])
+        ex, ey, ez = sph2cart([1, thetas[i], phis[i]], rad=True)
     
         op = ex*Sx + ey*Sy + ez*Sz
     

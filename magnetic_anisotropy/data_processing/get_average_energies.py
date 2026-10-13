@@ -1,7 +1,9 @@
 import os
 import sys
 import numpy as np
-from geometry import change_frame_sph, cart2sph, get_opposite_direction_sph
+# base.py is shared by all directories under magnetic_anisotropy/
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from base import get_opposite_direction_sph
 
 def get_energies_without_exchange(base_name = "energies", columns=[1, 2, 7]):
     # Take the average of E(direction) and E(opposite direction).

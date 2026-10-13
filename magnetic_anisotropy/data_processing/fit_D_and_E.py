@@ -6,7 +6,9 @@ from scipy.spatial.transform import Rotation as R
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from spin import Spin, dim, Sx, Sy, Sz, ID, ss, Sx2, Sy2, Sz2
-from geometry import change_frame_sph_rad, sph2cart_rad, cart2sph_deg
+# base.py is shared by all directories under magnetic_anisotropy/
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from base import change_frame_angles, sph2cart, cart2sph
 
 def rotate_frame(emat=np.eye(3), dtheta=0., dphi=0.):
 
@@ -41,38 +43,6 @@ def rotate_frame(emat=np.eye(3), dtheta=0., dphi=0.):
     return emat_prime
 
 
-def change_frame(angles, emat=np.eye(3), dtheta=0., dphi=0.):
-
-    """
-    Unit for angle: rad
-    """
-
-    # ====================
-    # Find new frame
-    # ====================
-
-    emat_prime = rotate_frame(emat, dtheta, dphi)
-
-    # ====================
-    # Change frame
-    # ====================
-
-    thetas, phis = angles
-
-    thetas_prime = []
-    phis_prime = []
-    n_direction = len(thetas)
-    for i in range(n_direction):
-        theta = thetas[i]
-        phi = phis[i]
-        dumb, theta_prime, phi_prime = change_frame_sph_rad([1, theta, phi], emat, emat_prime)
-        thetas_prime.append(theta_prime)
-        phis_prime.append(phi_prime)
-    thetas_prime = np.array(thetas_prime)
-    phis_prime = np.array(phis_prime)
-
-    return (thetas_prime, phis_prime)
-
 def e_ani_q(angles, D, E, E0, dtheta, dphi):
 
     """
@@ -85,7 +55,7 @@ def e_ani_q(angles, D, E, E0, dtheta, dphi):
     # Change frame
     # ====================
 
-    thetas, phis = change_frame(angles, emat_dft, dtheta, dphi)
+    thetas, phis = change_frame_angles(angles, emat_dft, rotate_frame(emat_dft, dtheta, dphi))
 
 
     # ==================================
@@ -95,7 +65,7 @@ def e_ani_q(angles, D, E, E0, dtheta, dphi):
     energies = []
     n_direction = len(thetas)
     for i in range(n_direction):
-        ex, ey, ez = sph2cart_rad([1, thetas[i], phis[i]])
+        ex, ey, ez = sph2cart([1, thetas[i], phis[i]], rad=True)
     
         op = ex*Sx + ey*Sy + ez*Sz
     
@@ -134,9 +104,18 @@ def e_ani_c(directions, D, E, E0, dtheta, dphi):
 
     global Spin, emat_dft
 
-    thetas, phis = change_frame(angles, emat_dft, dtheta, dphi)
+    thetas, phis = change_frame_angles(angles, emat_dft, rotate_frame(emat_dft, dtheta, dphi))
 
     return Spin**2 * ( D * np.cos(thetas)**2 + E * np.sin(thetas)**2 * np.cos(2*phis) ) + E0
+
+def cart2sph_phi360(xyz):
+    """cart2sph in degrees with phi in [0, 360) and phi = 0 at the poles."""
+    r, theta, phi = cart2sph(xyz)
+    if abs(np.radians(theta)) < 1e-6 or abs(np.radians(theta) - np.pi) < 1e-6:
+        phi = 0.0
+    elif phi < 0:
+        phi += 360
+    return [r, theta, phi]
 
 def get_local_eigen_frame(dtheta, dphi):
 
@@ -149,11 +128,11 @@ def get_local_eigen_frame(dtheta, dphi):
     emat_loc = rotate_frame(emat_dft, dtheta, dphi)
 
     print("\nLocal eigen frame in spherical coordinates: ")
-    dumb, theta, phi = cart2sph_deg(emat_loc[0])
+    dumb, theta, phi = cart2sph_phi360(emat_loc[0])
     print("Local e_x: (theta, phi) = ({:6.1f}, {:6.1f}) deg.".format(theta, phi))
-    dumb, theta, phi = cart2sph_deg(emat_loc[1])
+    dumb, theta, phi = cart2sph_phi360(emat_loc[1])
     print("Local e_y: (theta, phi) = ({:6.1f}, {:6.1f}) deg.".format(theta, phi))
-    dumb, theta, phi = cart2sph_deg(emat_loc[2])
+    dumb, theta, phi = cart2sph_phi360(emat_loc[2])
     print("Local e_z: (theta, phi) = ({:6.1f}, {:6.1f}) deg.".format(theta, phi))
 
     print("\nLocal eigen frame in cartesian coordinates: ")

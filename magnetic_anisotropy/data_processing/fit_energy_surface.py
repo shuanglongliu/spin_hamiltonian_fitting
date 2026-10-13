@@ -1,10 +1,13 @@
 import os
+import sys
 import numpy as np
 from scipy.optimize import curve_fit
 from scipy.spatial.transform import Rotation as R
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from geometry import change_frame_sph_rad
+# base.py is shared by all directories under magnetic_anisotropy/
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from base import change_frame_angles
 
 emat_dft = np.eye(3)
 
@@ -42,44 +45,11 @@ def rotate_frame(emat=np.eye(3), dtheta=0., dphi=0.):
     return emat_prime
 
 
-def change_frame(angles, emat=np.eye(3), dtheta=0., dphi=0.):
-
-    """
-    Unit for angle: rad
-    """
-
-    # ====================
-    # Find new frame
-    # ====================
-
-    emat_prime = rotate_frame(emat, dtheta, dphi)
-
-    # ====================
-    # Change frame
-    # ====================
-
-    thetas, phis = angles
-
-    thetas_prime = []
-    phis_prime = []
-    n_direction = len(thetas)
-    for i in range(n_direction):
-        theta = thetas[i]
-        phi = phis[i]
-        dumb, theta_prime, phi_prime = change_frame_sph_rad([1, theta, phi], emat, emat_prime)
-        thetas_prime.append(theta_prime)
-        phis_prime.append(phi_prime)
-    thetas_prime = np.array(thetas_prime)
-    phis_prime = np.array(phis_prime)
-
-    return (thetas_prime, phis_prime)
-
-
 def f(angles, a, c, dtheta, dphi):
 
     global emat_dft
 
-    thetas, phis = change_frame(angles, emat_dft, dtheta, dphi)
+    thetas, phis = change_frame_angles(angles, emat_dft, rotate_frame(emat_dft, dtheta, dphi))
 
     return a*thetas**2 + c
 

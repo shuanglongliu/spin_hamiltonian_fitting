@@ -5,6 +5,8 @@ import math
 import time
 import numpy as np
 import copy
+# base.py is shared by all directories under magnetic_anisotropy/
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 from base import magmoms, sphere, change_frame_sph, get_opposite_direction_sph, get_angle, get_angle_sph, sph2cart, get_emat_local
 from data import root_dir, incar, poscar, kpoints, job_script, emats_file
 

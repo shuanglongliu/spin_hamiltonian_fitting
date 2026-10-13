@@ -8,10 +8,13 @@ manages a collection of directions and the corresponding run directories.
 
 import os
 import subprocess
+import sys
 import time
 
 import numpy as np
 
+# base.py is shared by all directories under magnetic_anisotropy/
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from base import sph2cart, cart2sph, change_frame_sph, get_emat_local, sphere
 from data import (
     root_dir,
