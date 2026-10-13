@@ -2,7 +2,7 @@
 
 Extract full 3×3 exchange coupling matrices **J** from noncollinear DFT energies.
 
-The fit is done by `main.jl` (Julia). The Python scripts are helpers for preparing its input and
+The fit is done by `main.py`. The other scripts are helpers for preparing its input and
 post-processing its output.
 
 ---
@@ -28,7 +28,7 @@ With *n* pairs there are 9*n* unknowns, ordered `pair-1_xx, pair-1_xy, …, pair
 
 ```
 anisotropic_exchange/
-├── main.jl                             # fits the J matrices from input.yaml
+├── main.py                             # fits the J matrices from input.yaml
 ├── input.yaml                          # example input (3 spin-3/2 sites, 3 pairs, 27 energy pairs)
 ├── get_emat.py                         # builds a pair's local reference frame from a structure
 ├── format_energies.py                  # converts energies.dat rows into input.yaml energy pairs
@@ -68,27 +68,24 @@ energies:              # one entry per equation
 
 ---
 
-## `main.jl`
+## `main.py`
 
 | Function | Description |
 |----------|-------------|
-| `sph2cart(r, theta, phi, deg)` | Spherical → Cartesian spin vector |
-| `transform_reference_frame(...)` | Rotates spin vectors from one pair frame to another |
-| `fatten_one_energy_pair(...)` | Expresses both configurations of one energy pair in every pair frame |
-| `get_one_row_of_coefficients(...)` | Builds one row of the coefficient matrix |
-| `get_coefficient_matrix(..., factor)` | Builds the full coefficient matrix and the energy differences (meV) |
-| `get_Js(..., factor, quantum_correction)` | Solves for the J components (exact or least-squares; errors if underdetermined); optionally applies the empirical correction 2*S*<sub>*i*</sub>*S*<sub>*j*</sub> / (2*S*<sub>*i*</sub>*S*<sub>*j*</sub> + min(*S*<sub>*i*</sub>, *S*<sub>*j*</sub>)) (Ruiz 2003) |
-| `print_Js(n_spin_pair, Js, iformat)` | `iformat = 1`: labelled per pair; `iformat = 2`: one line of all components |
-| `main(dirname)` | Reads `dirname/input.yaml`, fits, and prints the J components |
+| `read_input(dirname)` | Reads `dirname/input.yaml` (spins, pairs, reference frames, energy pairs) |
+| `get_spin_vectors(conf, spins)` | Spin vectors of one configuration |
+| `get_coefficient_matrix(inp, factor)` | Builds the coefficient matrix, with spins rotated into each pair frame, and the energy differences (meV) |
+| `get_Js(inp, factor, quantum_correction)` | Solves for the J components (exact or least-squares; errors if underdetermined); optionally applies the empirical correction 2*S*<sub>*i*</sub>*S*<sub>*j*</sub> / (2*S*<sub>*i*</sub>*S*<sub>*j*</sub> + min(*S*<sub>*i*</sub>, *S*<sub>*j*</sub>)) (Ruiz 2003) |
+| `print_Js(Js, iformat)` | `iformat = 1`: labelled per pair; `iformat = 2`: one line of all components |
 
 ### Usage
 
 ```bash
-julia main.jl                 # uses input.yaml in the current directory
-julia main.jl path/to/dir     # uses path/to/dir/input.yaml
+python main.py                 # uses input.yaml in the current directory
+python main.py path/to/dir     # uses path/to/dir/input.yaml
 ```
 
-`factor` and `quantum_correction` are set in `main`.
+`factor` and `quantum_correction` are set in the `__main__` block.
 
 ---
 
@@ -105,5 +102,4 @@ julia main.jl path/to/dir     # uses path/to/dir/input.yaml
 
 ## Dependencies
 
-- Julia with `YAML.jl` (`LinearAlgebra` and `Printf` are standard libraries)
-- Python ≥ 3.8 with `numpy`; `ase` for `get_emat.py`; `scipy` for `transform_J_matrix_local2global.py`
+- Python ≥ 3.8 with `numpy` and `pyyaml`; `ase` for `get_emat.py`; `scipy` for `transform_J_matrix_local2global.py`
