@@ -1,0 +1,172 @@
+Pair   2   3
+
+Total 
+
+The x component of coupling matrix
+
+ -65.1 &   -2.4 &    -6.7 \\
+   4.6 &  -64.5 &    -2.4 \\
+  -1.0 &    3.3 &   -63.7
+
+The y component of coupling matrix
+
+ 260.9 &   -5.6 &    -2.2 \\
+   1.4 &  265.4 &     4.8 \\
+   0.0 &   -5.1 &   261.0
+
+The z component of coupling matrix
+
+ -31.0 &    0.4 &     0.6 \\
+  -1.5 &  -27.0 &    -1.3 \\
+  -2.5 &    2.0 &   -26.4
+
+
+The isotropic term
+
+The x component of coupling matrix
+
+ -64.4 &    0.0 &     0.0 \\
+   0.0 &  -64.4 &     0.0 \\
+   0.0 &    0.0 &   -64.4
+
+The y component of coupling matrix
+
+ 262.4 &    0.0 &     0.0 \\
+   0.0 &  262.4 &     0.0 \\
+   0.0 &    0.0 &   262.4
+
+The z component of coupling matrix
+
+ -28.2 &    0.0 &     0.0 \\
+   0.0 &  -28.2 &     0.0 \\
+   0.0 &    0.0 &   -28.2
+
+
+The antisymmetric term
+
+The x component of coupling matrix
+
+   0.0 &   -3.5 &    -2.8 \\
+   3.5 &    0.0 &    -2.8 \\
+   2.8 &    2.8 &     0.0
+
+The y component of coupling matrix
+
+   0.0 &   -3.5 &    -1.1 \\
+   3.5 &    0.0 &     5.0 \\
+   1.1 &   -5.0 &     0.0
+
+The z component of coupling matrix
+
+   0.0 &    1.0 &     1.5 \\
+  -1.0 &    0.0 &    -1.7 \\
+  -1.5 &    1.7 &     0.0
+
+
+The anisotropic symmetric term
+
+The x component of coupling matrix
+
+  -0.7 &    1.1 &    -3.8 \\
+   1.1 &   -0.0 &     0.4 \\
+  -3.8 &    0.4 &     0.7
+
+The y component of coupling matrix
+
+  -1.6 &   -2.1 &    -1.1 \\
+  -2.1 &    3.0 &    -0.1 \\
+  -1.1 &   -0.1 &    -1.4
+
+The z component of coupling matrix
+
+  -2.9 &   -0.5 &    -0.9 \\
+  -0.5 &    1.1 &     0.3 \\
+  -0.9 &    0.3 &     1.8
+
+
+Pair   1   4
+
+Total 
+
+The x component of coupling matrix
+
+  33.8 &   -3.4 &    -5.1 \\
+   6.2 &   20.0 &    -8.8 \\
+  10.8 &  -15.1 &    19.2
+
+The y component of coupling matrix
+
+   3.4 &    1.0 &    -0.1 \\
+   0.7 &    3.7 &    -1.9 \\
+   0.7 &    1.6 &    -0.4
+
+The z component of coupling matrix
+
+  33.5 &   -3.1 &    -3.1 \\
+   1.9 &   21.6 &    -8.2 \\
+   3.9 &  -12.8 &    19.5
+
+
+The isotropic term
+
+The x component of coupling matrix
+
+  24.4 &    0.0 &     0.0 \\
+   0.0 &   24.4 &     0.0 \\
+   0.0 &    0.0 &    24.4
+
+The y component of coupling matrix
+
+   2.3 &    0.0 &     0.0 \\
+   0.0 &    2.3 &     0.0 \\
+   0.0 &    0.0 &     2.3
+
+The z component of coupling matrix
+
+  24.9 &    0.0 &     0.0 \\
+   0.0 &   24.9 &     0.0 \\
+   0.0 &    0.0 &    24.9
+
+
+The antisymmetric term
+
+The x component of coupling matrix
+
+   0.0 &   -4.8 &    -8.0 \\
+   4.8 &    0.0 &     3.1 \\
+   8.0 &   -3.1 &     0.0
+
+The y component of coupling matrix
+
+   0.0 &    0.1 &    -0.4 \\
+  -0.1 &    0.0 &    -1.8 \\
+   0.4 &    1.8 &     0.0
+
+The z component of coupling matrix
+
+   0.0 &   -2.5 &    -3.5 \\
+   2.5 &    0.0 &     2.3 \\
+   3.5 &   -2.3 &     0.0
+
+
+The anisotropic symmetric term
+
+The x component of coupling matrix
+
+   9.5 &    1.4 &     2.9 \\
+   1.4 &   -4.3 &   -12.0 \\
+   2.9 &  -12.0 &    -5.1
+
+The y component of coupling matrix
+
+   1.2 &    0.9 &     0.3 \\
+   0.9 &    1.5 &    -0.1 \\
+   0.3 &   -0.1 &    -2.6
+
+The z component of coupling matrix
+
+   8.6 &   -0.6 &     0.4 \\
+  -0.6 &   -3.2 &   -10.5 \\
+   0.4 &  -10.5 &    -5.4
+
+

@@ -1,0 +1,7 @@
+"""Energy unit conversions."""
+
+MEV_PER_EV = 1000.0
+CM_PER_MEV = 8.06554393738        # 1 meV in cm^-1
+EV_PER_HA = 27.211396641308
+CM_PER_EV = MEV_PER_EV * CM_PER_MEV
+CM_PER_HA = EV_PER_HA * CM_PER_EV
