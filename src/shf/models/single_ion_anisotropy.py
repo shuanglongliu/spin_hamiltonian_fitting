@@ -181,14 +181,14 @@ def write_fitted(thetas, phis, e, e_fit, fname="energies_fitted.dat"):
 
 
 def fit_DE(cfg):
-    """E = D Sz^2 + E (Sx^2 - Sy^2) + E0 in the eigenframe; spins as quantum operators (model:
+    """E = D [Sz^2 - S(S + 1)/3] + E (Sx^2 - Sy^2) + E0 in the eigenframe; spins as quantum operators (model:
     quantum) or classical vectors (model: classical). Writes energies_fitted.dat,
     d_spin-orbit.dat (diagonal D tensor and the eigenframe axes) and fitting_quality.pdf."""
     frame = np.array(cfg.get("frame", np.eye(3)), dtype=float)
     S = float(cfg["spin"])
     ops = spin_operators(S)
     Sx2, Sy2, Sz2 = ops.Sx @ ops.Sx, ops.Sy @ ops.Sy, ops.Sz @ ops.Sz
-    op_D = 3 * Sz2 + ops.ss * ops.ID   # the constant ss is absorbed in E0
+    op_D = 3 * Sz2 - ops.ss * ops.ID
     op_E = Sx2 - Sy2
 
     def quantum(angles, D, E, E0, alpha, beta, gamma):

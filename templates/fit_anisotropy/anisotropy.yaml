@@ -32,7 +32,7 @@ plot:                        # -> <input>.pdf
 # angles (alpha, beta, gamma): its z axis points along (theta, phi) = (beta, gamma), and alpha turns
 # x and y about it. Optional: frame: 3x3 rows = axes of the frame the angles are written in.
 
-fit-DE:                      # E = D Sz^2 + E (Sx^2 - Sy^2) + E0
+fit-DE:                      # E = D [Sz^2 - S(S+1)/3] + E (Sx^2 - Sy^2) + E0
   input: energies_average
   columns: [1, 2, 3]
   title: FePc

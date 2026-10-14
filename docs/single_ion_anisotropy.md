@@ -12,7 +12,7 @@ synthetic example data. In the directory:
 | `change-frame` | directions in a frame with z along `z_direction`, or the lowest/highest-energy direction → `new_frame.dat` |
 | `mae` | out-of-plane and in-plane anisotropy energies from θ = 0 and the θ = 90° circle |
 | `plot` | polar map of the energies → `<input>.pdf` |
-| `fit-DE` | *D S*<sub>z</sub>² + *E* (*S*<sub>x</sub>² − *S*<sub>y</sub>²) + *E*<sub>0</sub> in a fitted eigenframe; quantum or classical spins → `energies_fitted.dat`, `d_spin-orbit.dat`, `fitting_quality.pdf` |
+| `fit-DE` | *D* [*S*<sub>z</sub>² − *S*(*S* + 1)/3] + *E* (*S*<sub>x</sub>² − *S*<sub>y</sub>²) + *E*<sub>0</sub> in a fitted eigenframe; quantum or classical spins → `energies_fitted.dat`, `d_spin-orbit.dat`, `fitting_quality.pdf` |
 | `fit-D-tensor` | **S**<sup>T</sup> **D** **S** + *E*<sub>0</sub> with a general symmetric **D**, then *D*, *E* and the eigenframe |
 | `fit-curve` | *a* (θ − *b*)² + *c* along one cut |
 | `fit-surface` | *a* θ′² + *c*, θ′ measured from a fitted axis |
