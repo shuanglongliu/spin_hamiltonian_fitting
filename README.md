@@ -14,13 +14,32 @@ The DFT job templates are described in [dft_jobs.md](docs/dft_jobs.md).
 
 ## Install
 
+Requirements: Python ≥ 3.8 and pip ≥ 21.3. numpy, scipy, pyyaml and matplotlib are installed
+automatically; ase is optional.
+
 ```bash
-pip install -e .            # Python >= 3.8; numpy, scipy, pyyaml, matplotlib
-pip install -e ".[structure]"   # also ase, for `shf anisotropic-exchange frame`
+git clone https://github.com/shuanglongliu/spin_hamiltonian_fitting.git
+cd spin_hamiltonian_fitting
+
+# optional: a separate environment
+conda create -n shf python=3.11 && conda activate shf     # or: python -m venv .venv && source .venv/bin/activate
+
+pip install -e .                  # the shf package and the shf command
+pip install -e ".[structure]"     # also ase, needed for `shf anisotropic-exchange frame`
 ```
 
-This installs the `shf` package and command. Job scripts (`main.py`) import `shf`, so they run
-from any directory.
+`-e` (editable) links the installed package to this checkout, so a `git pull` takes effect
+without reinstalling. Job scripts (`main.py`) import `shf`, so they run from any directory
+while the environment with `shf` is active.
+
+Check the install:
+
+```bash
+shf -h
+python -m unittest discover tests     # from the repository root
+```
+
+To remove it: `pip uninstall shf`.
 
 ## A new system
 
